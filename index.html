@@ -1,1115 +1,929 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Horizon Employment Agency</title>
+    <!-- 關鍵：Viewport 設定確保移動設備正確縮放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO 關鍵字 -->
+    <meta name="keywords" content="做生意, 創業, 僱傭公司, 僱傭中心, 菲傭, 印傭, 請工人, 外傭, 家傭, 工人姐姐, 生意買賣, 生意加盟, 教你創業, 教你做生意">
+    <meta name="description" content="全港第一間專注教你創業的僱傭服務協會，提供一站式開業指導、牌照申請及營運教學。">
+
+    <title>教你創業：香港僱傭服務協會</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-        // 【設定區域】請在此貼上您的 Firebase Config
-        // ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-        const firebaseConfig = {
-            apiKey: "AIzaSyDxxxxxxxxxxxxxxxxxxxxxxxx", 
-            authDomain: "your-project.firebaseapp.com",
-            projectId: "your-project-id",
-            storageBucket: "your-project.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:xxxxxxxxxxx"
-        };
-        // ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
-
-        window.isFirebaseMode = false;
-        window.db = null;
-        window.collection = collection;
-        window.addDoc = addDoc;
-        window.doc = doc;
-        window.updateDoc = updateDoc;
-        window.deleteDoc = deleteDoc;
-        window.onSnapshot = onSnapshot;
-        window.query = query;
-
-        async function initSystem() {
-            const isConfigured = firebaseConfig.projectId !== "your-project-id" && !firebaseConfig.apiKey.includes("xxxx");
-            if (isConfigured) {
-                try {
-                    const app = initializeApp(firebaseConfig);
-                    window.db = getFirestore(app);
-                    window.isFirebaseMode = true;
-                    console.log("Firebase Mode");
-                    document.getElementById('mode-badge').innerHTML = '<span class="bg-green-100 text-green-800 text-xs font-medium mr-2 px-2 py-0.5 rounded border border-green-400">雲端同步模式 (Firebase)</span>';
-                } catch (e) {
-                    console.error(e);
-                    activateOfflineMode();
-                }
-            } else {
-                activateOfflineMode();
-            }
-            window.initApp();
-        }
-
-        function activateOfflineMode() {
-            window.isFirebaseMode = false;
-            console.log("Offline Mode");
-            document.getElementById('mode-badge').innerHTML = '<span class="bg-orange-100 text-orange-800 text-xs font-medium mr-2 px-2 py-0.5 rounded border border-orange-400">單機模式 (資料僅存於此裝置)</span>';
-            const toast = document.getElementById('offline-toast');
-            toast.classList.remove('hidden');
-            setTimeout(() => { toast.classList.add('opacity-0'); setTimeout(()=>toast.remove(), 1000); }, 5000);
-        }
-        initSystem();
-    </script>
-
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* 字體大小設定 */
-        html { font-size: 16px; } 
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f3f4f6; }
-        .btn-nav.active { background-color: #1e40af; color: white; }
-        .hidden-section { display: none; }
-        
-        .wa-btn {
-            background-color: #25D366; color: white;
-            font-weight: bold; padding: 10px 20px; border-radius: 50px;
-            display: inline-flex; align-items: center; gap: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: transform 0.2s;
-            text-decoration: none; font-size: 1rem;
+        /* 全局字體設定 */
+        html {
+            font-family: 'Noto Sans TC', sans-serif;
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
-        .wa-btn:hover { transform: scale(1.05); background-color: #1ebc57; }
 
-        #loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255,255,255,0.9); z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
-            color: #1e40af; transition: opacity 0.5s;
+        /* 統一字體階層 (21px, 26px, 34px, 42px) */
+        
+        /* 基礎內文 - 統一為 21px */
+        body, p, li, span, div, a, input, select, textarea {
+            font-size: 21px; 
+            line-height: 1.6;
+        }
+
+        /* 導航欄 & 按鈕 - 改為 21px */
+        .nav-text, .btn-text, button, .button {
+            font-size: 21px !important;
+            line-height: 1.4;
+        }
+
+        /* 小標題 / 重點數據 - 26px */
+        h4, .text-xl, .font-bold.text-xl {
+            font-size: 26px !important; 
+            line-height: 1.4;
+        }
+
+        /* 中標題 - 34px */
+        h3, .text-2xl {
+            font-size: 34px !important;
+            line-height: 1.4;
+        }
+
+        /* 大標題 - 42px */
+        h2, .text-4xl, .text-5xl {
+            font-size: 42px !important;
+            line-height: 1.2;
+        }
+
+        /* 手機版適配 */
+        @media (max-width: 768px) {
+            /* 在手機上適度縮小以防破版，但維持相對比例 */
+            body, p, li, span, div { font-size: 19px !important; } 
+            .nav-text, .btn-text { font-size: 19px !important; }
+            h2 { font-size: 34px !important; }
+            h3 { font-size: 28px !important; }
         }
         
-        /* 隱藏數字輸入框預設箭頭 */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
+        /* 漸變文字效果 */
+        .gradient-text {
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: #2563eb; 
+        }
+        @supports (-webkit-background-clip: text) {
+            .gradient-text {
+                color: transparent;
+            }
+        }
 
-        input, select, textarea { font-size: 0.95rem; }
+        /* 背景特效 */
+        .hero-bg {
+            background-color: #1e293b;
+            background-image: radial-gradient(at 0% 0%, hsla(222, 47%, 11%, 1) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(210, 29%, 24%, 1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(263, 29%, 24%, 1) 0, transparent 50%);
+        }
         
-        .salary-btn {
-            background-color: #e5e7eb; color: #374151;
-            width: 50px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; user-select: none; font-size: 1.2rem; font-weight: bold;
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out;
         }
-        .salary-btn:hover { background-color: #d1d5db; }
-        .salary-btn:active { background-color: #9ca3af; }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .highlight-text {
+            text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
 
-        /* On Blur Validation Error Style */
-        .error-msg {
-            background-color: #fee2e2; /* 淺紅色底 */
-            color: #991b1b; /* 深紅色字 */
-            font-size: 0.85rem;
-            padding: 4px 8px;
-            border-radius: 4px;
-            margin-top: 4px;
-            display: none; /* 預設隱藏 */
+        * {
+            -webkit-tap-highlight-color: transparent;
         }
-        .error-msg.visible { display: block; }
-        .input-error { border-color: #ef4444; border-width: 2px; }
+
+        /* FAQ Accordion 動畫 */
+        details > summary {
+            list-style: none;
+        }
+        details > summary::-webkit-details-marker {
+            display: none;
+        }
+        details[open] summary ~ * {
+            animation: sweep .3s ease-in-out;
+        }
+        @keyframes sweep {
+            0%    {opacity: 0; transform: translateY(-10px)}
+            100%  {opacity: 1; transform: translateY(0)}
+        }
+
+        /* 導航欄縮小動畫 */
+        #navbar {
+            transition: all 0.3s ease-in-out;
+        }
+        #navbar.shrink {
+            height: 64px !important;
+        }
+        #navbar.shrink .logo-container {
+            transform: scale(0.9);
+        }
     </style>
 </head>
-<body class="pb-20 text-gray-800">
+<body class="bg-gray-50 text-gray-800 antialiased">
 
-    <div id="loading-overlay">
-        <div class="text-center">
-            <i class="fa-solid fa-circle-notch fa-spin text-4xl mb-4"></i><br>
-            <span class="text-xl font-bold">系統啟動中...</span>
-        </div>
-    </div>
-
-    <div id="offline-toast" class="hidden fixed bottom-5 right-5 bg-white border-l-4 border-orange-500 text-gray-700 p-4 rounded shadow-lg z-50 transition-opacity duration-1000 max-w-xs text-sm">
-        <p class="font-bold"><i class="fa-solid fa-triangle-exclamation text-orange-500"></i> 目前為單機模式</p>
-        <p class="mt-1">尚未設定 Firebase 金鑰，資料僅儲存於此。</p>
-    </div>
-
-    <!-- 導航 -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex flex-col md:flex-row justify-between items-center py-3">
-                <div class="flex flex-col items-center md:items-start mb-2 md:mb-0">
-                    <div class="font-bold text-xl text-blue-900 text-center md:text-left">
-                        Horizon Employment Agency
+    <!-- 導航欄 -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-md shadow-sm transition-all duration-300 supports-backdrop-blur:bg-white/60 h-20 flex items-center" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 w-full"> 
+            <div class="flex justify-between items-center w-full">
+                <!-- Logo 區域 -->
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer logo-container transition-transform duration-300" onclick="window.scrollTo(0,0)">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                        H
                     </div>
-                    <div id="mode-badge" class="mt-1"></div>
+                    <span class="font-bold text-slate-900 nav-text" style="font-size: 26px !important;">香港僱傭服務協會</span>
                 </div>
-                <div class="flex space-x-2">
-                    <button onclick="switchTab('admin')" id="nav-admin" class="btn-nav px-4 py-2 rounded text-sm font-medium text-gray-700 hover:bg-blue-50 transition">
-                        🇭🇰 管理員
-                    </button>
-                    <button onclick="switchTab('english')" id="nav-english" class="btn-nav px-4 py-2 rounded text-sm font-medium text-gray-700 hover:bg-blue-50 transition">
-                        🇵🇭 English
-                    </button>
-                    <button onclick="switchTab('indonesian')" id="nav-indonesian" class="btn-nav px-4 py-2 rounded text-sm font-medium text-gray-700 hover:bg-blue-50 transition">
-                        🇮🇩 Indonesian
+                
+                <!-- 電腦版菜單 -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-6">
+                        <a href="#home" class="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md font-medium transition nav-text">首頁</a>
+                        <a href="#industry" class="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md font-medium transition nav-text">行業優勢</a>
+                        <a href="#testimonials" class="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md font-medium transition nav-text">學生見證</a>
+                        <a href="#services" class="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md font-medium transition nav-text">課程內容</a>
+                        <a href="#seminar" class="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md font-medium transition nav-text">免費分享會</a>
+                        <a href="#faq" class="text-gray-700 hover:text-blue-600 px-2 py-2 rounded-md font-medium transition nav-text">常見問題</a>
+                        <a href="#contact" class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-full font-medium shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 btn-text">
+                            <i class="fab fa-whatsapp mr-1"></i> 立即諮詢
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 手機版菜單按鈕 -->
+                <div class="flex md:hidden">
+                    <button type="button" onclick="toggleMenu()" aria-label="Toggle menu" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-blue-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
+                        <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
+            </div>
+        </div>
+        <!-- 手機版展開菜單 -->
+        <div class="hidden md:hidden bg-white border-t border-gray-100 shadow-lg absolute w-full left-0 z-40 top-full" id="mobile-menu">
+            <div class="px-6 pt-2 pb-6 space-y-2">
+                <a href="#home" onclick="toggleMenu()" class="block px-3 py-3 rounded-md font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 nav-text">首頁</a>
+                <a href="#industry" onclick="toggleMenu()" class="block px-3 py-3 rounded-md font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 nav-text">行業優勢</a>
+                <a href="#testimonials" onclick="toggleMenu()" class="block px-3 py-3 rounded-md font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 nav-text">學生見證</a>
+                <a href="#services" onclick="toggleMenu()" class="block px-3 py-3 rounded-md font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 nav-text">課程內容</a>
+                <!-- 修正：加入免費分享會 -->
+                <a href="#seminar" onclick="toggleMenu()" class="block px-3 py-3 rounded-md font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 nav-text">免費分享會</a>
+                <a href="#faq" onclick="toggleMenu()" class="block px-3 py-3 rounded-md font-medium text-gray-700 hover:bg-gray-50 hover:text-blue-600 nav-text">常見問題</a>
+                <a href="#contact" onclick="toggleMenu()" class="block px-3 py-3 rounded-md font-medium text-blue-600 font-bold bg-blue-50 mt-4 nav-text">
+                    <i class="fab fa-whatsapp mr-2"></i>立即諮詢
+                </a>
             </div>
         </div>
     </nav>
 
-    <!-- 1. 登入頁面 -->
-    <section id="page-login" class="max-w-md mx-auto mt-10 p-8 bg-white rounded-lg shadow-lg hidden-section">
-        <div class="text-center mb-6">
-            <h2 class="text-xl font-bold text-gray-800">管理員登入 Administrator Login</h2>
-            <p class="text-gray-500 text-sm mt-2">請輸入密碼以繼續<br>Please enter password to continue</p>
-        </div>
-        <div class="mb-6">
-            <input type="password" id="admin-password" class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-base" placeholder="輸入密碼 Enter Password">
-            <p id="login-error" class="text-red-500 text-sm mt-2 hidden">密碼錯誤 / Incorrect Password</p>
-        </div>
-        <button onclick="checkLogin()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-bold text-base transition shadow">登入 Login</button>
-    </section>
-
-    <!-- 2. 管理員後台 -->
-    <section id="page-admin" class="max-w-5xl mx-auto mt-6 px-4 hidden-section">
-        <!-- 子選單 -->
-        <div class="flex flex-wrap gap-3 mb-6 border-b pb-4">
-            <button onclick="switchAdminSub('input')" class="px-4 py-2 rounded-full bg-blue-100 text-blue-800 font-bold text-sm hover:bg-blue-200 transition"><i class="fa-solid fa-pen mr-2"></i> 新資料輸入器</button>
-            <button onclick="switchAdminSub('fishing')" class="px-4 py-2 rounded-full bg-purple-100 text-purple-800 font-bold text-sm hover:bg-purple-200 transition"><i class="fa-solid fa-fish mr-2"></i> 釣魚盤</button>
-            <button onclick="switchAdminSub('list')" class="px-4 py-2 rounded-full bg-yellow-100 text-yellow-800 font-bold text-sm hover:bg-yellow-200 transition"><i class="fa-solid fa-list mr-2"></i> 已上載的資料</button>
-        </div>
-
-        <!-- 輸入區域 -->
-        <div id="admin-input-area" class="bg-white p-6 rounded-xl shadow-md">
-            <div id="fishing-header" class="hidden mb-6 bg-purple-50 p-4 rounded-lg border border-purple-200 flex justify-between items-center">
-                <span class="font-bold text-purple-800 text-base">🎣 釣魚盤模式 (隨機生成)</span>
-                <button onclick="generateFishingData()" class="bg-purple-600 text-white px-4 py-2 rounded font-bold hover:bg-purple-700 transition text-sm">重新生成數據</button>
-            </div>
-
-            <form id="employer-form" class="space-y-5">
-                <input type="hidden" id="edit-doc-id"> 
-                
-                <!-- 1. 僱主編號 -->
-                <div class="flex flex-col">
-                    <label class="font-bold text-gray-700 mb-1 text-base">僱主編號 (Employer Number)</label>
-                    <input type="text" id="inp-id" class="p-3 border rounded-lg w-full bg-gray-50" placeholder="例如：E2800" onblur="validate(this)">
-                    <div class="error-msg">此欄位必須填寫</div>
-                </div>
-
-                <!-- 2. 家庭成員 (已搬到編號下) -->
-                <div class="flex flex-col p-4 bg-gray-50 rounded-lg border">
-                    <label class="font-bold text-gray-700 mb-2 text-base">家庭成員及年齡 (Employer Member & Age)</label>
-                    <div id="member-list-display" class="mb-2 flex flex-wrap gap-2 min-h-[30px]"></div>
-                    <input type="hidden" id="inp-members-string" onblur="validateMember(this)">
-                    <div class="error-msg" id="member-error">請至少新增一位家庭成員</div>
-                    
-                    <div class="flex gap-2 items-end">
-                        <div class="flex-1">
-                            <label class="text-xs text-gray-500 mb-1 block">成員類型</label>
-                            <select id="mem-type" class="w-full p-3 border rounded-lg" onchange="toggleAgeInput()">
-                                <option value="成人">成人 Adult</option>
-                                <option value="小孩">小孩 Child</option>
-                                <option value="長者">長者 Elderly</option>
-                                <option value="男孩">男孩 Boy</option>
-                                <option value="女孩">女孩 Girl</option>
-                                <option value="婆婆">婆婆 Grandma</option>
-                                <option value="公公">公公 Grandpa</option>
-                            </select>
-                        </div>
-                        <div class="w-24 hidden" id="age-input-group">
-                            <label class="text-xs text-gray-500 mb-1 block">年齡</label>
-                            <input type="number" id="mem-age" class="w-full p-3 border rounded-lg" placeholder="歲">
-                        </div>
-                        <button type="button" onclick="addMember()" class="bg-blue-600 text-white px-4 py-3 rounded-lg font-bold hover:bg-blue-700 text-sm h-full">新增</button>
-                    </div>
-                </div>
-
-                <!-- 3. 地區 -->
-                <div class="flex flex-col">
-                    <label class="font-bold text-gray-700 mb-1 text-base">僱主地區 (Employer Location)</label>
-                    <input type="text" id="inp-location" class="p-3 border rounded-lg w-full" placeholder="例如：將軍澳" onblur="validate(this)">
-                    <div class="error-msg">此欄位必須填寫</div>
-                </div>
-
-                <!-- 4. 寵物 -->
-                <div class="flex flex-col p-4 bg-gray-50 rounded-lg border">
-                    <label class="font-bold text-gray-700 mb-2 text-base">寵物 (Pets)</label>
-                    <div id="pet-list-display" class="mb-2 flex flex-wrap gap-2 min-h-[30px]"></div>
-                    <input type="hidden" id="inp-pets-string" onblur="validatePet(this)">
-                    <div class="error-msg" id="pet-error">請至少新增一項寵物資料(或選擇無)</div>
-                    
-                    <div class="flex gap-2 items-end flex-wrap">
-                        <div class="flex-1 min-w-[180px]">
-                            <label class="text-xs text-gray-500 mb-1 block">寵物類型</label>
-                            <select id="pet-add-type" class="w-full p-3 border rounded-lg" onchange="togglePetInputs()">
-                                <option value="" disabled selected hidden>請選擇...</option>
-                                <option value="沒有寵物">沒有寵物</option>
-                                <option value="小狗">小狗 Small Dog</option>
-                                <option value="中狗">中狗 Medium Dog</option>
-                                <option value="大狗">大狗 Big Dog</option>
-                                <option value="貓">貓 Cat</option>
-                                <option value="兔">兔 Rabbit</option>
-                                <option value="鸚鵡">鸚鵡 Parrot</option>
-                                <option value="烏龜">烏龜 Turtle</option>
-                                <option value="其他">其他 Other</option>
-                            </select>
-                        </div>
-                        <!-- 其他文字輸入 -->
-                        <div id="pet-other-group" class="w-full hidden order-last mt-2">
-                            <input type="text" id="inp-pets-other-text" class="p-3 border rounded-lg w-full" placeholder="請以英文填寫，例如：Hamster">
-                        </div>
-
-                        <div class="w-36 hidden" id="pet-qty-group">
-                             <label class="text-xs text-gray-500 mb-1 block">數量</label>
-                             <div class="flex border rounded-lg overflow-hidden bg-white h-[48px]">
-                                 <input type="number" id="pet-add-qty" class="w-full p-2 text-center border-none outline-none text-lg" value="1" min="1">
-                                 <div class="flex gap-px pr-px items-center bg-gray-100">
-                                     <button type="button" onclick="adjPet(1)" class="w-8 h-full bg-gray-200 hover:bg-gray-300 text-sm font-bold">▲</button>
-                                     <button type="button" onclick="adjPet(-1)" class="w-8 h-full bg-gray-200 hover:bg-gray-300 text-sm font-bold">▼</button>
-                                 </div>
-                             </div>
-                        </div>
-                        <button type="button" onclick="addPetToList()" class="bg-blue-600 text-white px-4 py-3 rounded-lg font-bold hover:bg-blue-700 text-sm h-[48px]">新增</button>
-                    </div>
-                </div>
-
-                <!-- 5. 工人房 -->
-                <div class="flex flex-col">
-                    <label class="font-bold text-gray-700 mb-1 text-base">工人房 (Helper Room)</label>
-                    <select id="inp-room" class="p-3 border rounded-lg w-full" onchange="toggleRoomOther()" onblur="validate(this)">
-                        <option value="" disabled selected hidden>請選擇...</option>
-                        <option value="有工人房">有工人房</option>
-                        <option value="與小孩同房">與小孩同房</option>
-                        <option value="與長者同房">與長者同房</option>
-                        <option value="與另外傭同房">與另外傭同房</option>
-                        <option value="與女僱主同房">與女僱主同房</option>
-                        <option value="其他">其他</option>
-                    </select>
-                    <input type="text" id="inp-room-other" class="mt-2 p-3 border rounded-lg w-full hidden" placeholder="請以英文填寫">
-                    <div class="error-msg">此欄位必須填寫</div>
-                </div>
-
-                <!-- 6. 上班日期 -->
-                <div class="flex flex-col">
-                    <label class="font-bold text-gray-700 mb-1 text-base">上班日期 (Start Date)</label>
-                    <select id="inp-date" class="p-3 border rounded-lg w-full" onblur="validate(this)">
-                        <option value="" disabled selected hidden>請選擇...</option>
-                        <option value="盡快">盡快</option>
-                        <option value="一月">一月</option>
-                        <option value="二月">二月</option>
-                        <option value="三月">三月</option>
-                        <option value="四月">四月</option>
-                        <option value="五月">五月</option>
-                        <option value="六月">六月</option>
-                        <option value="七月">七月</option>
-                        <option value="八月">八月</option>
-                        <option value="九月">九月</option>
-                        <option value="十月">十月</option>
-                        <option value="十一月">十一月</option>
-                        <option value="十二月">十二月</option>
-                    </select>
-                    <div class="error-msg">此欄位必須填寫</div>
-                </div>
-
-                <!-- 7. 薪金 -->
-                <div class="flex flex-col">
-                    <label class="font-bold text-gray-700 mb-1 text-base">薪金 (Salary)</label>
-                    <div class="flex items-center gap-3">
-                        <input type="number" id="inp-salary" class="p-3 border rounded-lg flex-1 text-lg" placeholder="例如：5100" onblur="validate(this)">
-                        <div class="flex gap-1">
-                            <div onclick="adjustSalary(-100)" class="salary-btn rounded-l-lg border border-gray-300">▼</div>
-                            <div onclick="adjustSalary(100)" class="salary-btn rounded-r-lg border border-gray-300">▲</div>
-                        </div>
-                    </div>
-                    <div class="error-msg">此欄位必須填寫</div>
-                </div>
-
-                <!-- 8. 國籍 (已搬到薪金下) -->
-                <div class="flex flex-col">
-                    <label class="font-bold text-gray-700 mb-1 text-base">國籍要求 (Nationality Required)</label>
-                    <select id="inp-nationality" class="p-3 border rounded-lg w-full" onchange="toggleNatOther()" onblur="validate(this)">
-                        <option value="" disabled selected hidden>請選擇...</option>
-                        <option value="Filipino">菲律賓 Filipino</option>
-                        <option value="Indonesian">印尼 Indonesian</option>
-                        <option value="Filipino & Indonesian">菲印 Filipino & Indonesian</option>
-                        <option value="Indonesian & Filipino">印菲 Indonesian & Filipino</option>
-                        <option value="Other">其他 (Other)</option>
-                    </select>
-                    <input type="text" id="inp-nationality-other" class="mt-2 p-3 border rounded-lg w-full hidden" placeholder="請以英文填寫，例如：Sri Lankans">
-                    <div class="error-msg">此欄位必須填寫</div>
-                </div>
-
-                <!-- 9. 語言 -->
-                <div class="flex flex-col">
-                    <label class="font-bold text-gray-700 mb-1 text-base">語言要求 (Language Required)</label>
-                    <select id="inp-lang" class="p-3 border rounded-lg w-full" onblur="validate(this)">
-                        <option value="" disabled selected hidden>請選擇...</option>
-                        <option value="英文">英文</option>
-                        <option value="廣東話">廣東話</option>
-                        <option value="普通話">普通話</option>
-                        <option value="英文&廣東話">英文&廣東話</option>
-                        <option value="英文&普通話">英文&普通話</option>
-                    </select>
-                    <div class="error-msg">此欄位必須填寫</div>
-                </div>
-
-                <!-- 10. 備註 -->
-                <div class="flex flex-col">
-                    <label class="font-bold text-gray-700 mb-1 text-base">備註 (Remarks)</label>
-                    <textarea id="inp-remarks" class="p-3 border rounded-lg w-full h-24 text-base" placeholder="非必填寫，如需要填寫備註，請以英文填寫"></textarea>
-                </div>
-
-                <button type="button" onclick="handleSave()" id="btn-save" class="w-full bg-green-600 text-white font-bold py-4 rounded-xl hover:bg-green-700 mt-6 text-lg shadow transition">
-                    <i class="fa-solid fa-upload mr-2"></i> <span id="btn-save-text">上載資料</span>
-                </button>
-            </form>
-            
-            <!-- Fishing Footer -->
-            <div id="fishing-footer" class="text-center text-gray-400 text-xs mt-4 hidden">V1.2</div>
-        </div>
-
-        <!-- 列表區域 -->
-        <div id="admin-list-area" class="hidden">
-            <h3 class="font-bold text-2xl mb-6 text-gray-800">已上載的資料 <span id="db-status-text" class="text-base font-normal text-gray-500"></span></h3>
-            <div id="admin-records-container" class="space-y-6"></div>
-        </div>
-    </section>
-
-    <!-- 3. 公開頁面 -->
-    <section id="page-public" class="max-w-7xl mx-auto mt-8 px-4 hidden-section">
+    <!-- 首頁封面 (Hero Section) -->
+    <section id="home" class="hero-bg min-h-screen flex items-center justify-center pt-32 pb-16 md:pt-20 relative overflow-hidden">
+        <div class="absolute top-1/4 left-10 w-48 h-48 md:w-72 md:h-72 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute top-1/3 right-10 w-48 h-48 md:w-72 md:h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
         
-        <!-- WhatsApp Banner -->
-        <div class="mb-6 flex flex-col items-center">
-            <div id="banner-box" class="w-full max-w-4xl mb-6 p-4 rounded-lg text-left shadow-md border-l-8 bg-blue-50 border-blue-300 text-black">
-                <p id="banner-text" class="font-bold leading-relaxed"></p>
+        <div class="relative max-w-7xl mx-auto px-6 lg:px-8 text-center z-10">
+            <div class="animate-fade-in-up">
+                <h2 class="font-bold text-blue-300 mb-6 md:mb-8 highlight-text leading-normal" style="font-size: 34px !important;">
+                    🏃💨 你已經厭倦，每日朝9晚6返工？
+                </h2>
+                
+                <h1 class="font-extrabold text-white tracking-tight mb-8 leading-tight">
+                    <span style="font-size: 42px !important; display: block; margin-bottom: 10px;">唔想打工，但又唔識創業？</span>
+                    <span class="gradient-text bg-gradient-to-r from-blue-400 to-indigo-400 block" style="font-size: 55px !important;">一個課程，一次創業，改變一生</span>
+                </h1>
+                
+                <p class="mt-4 max-w-2xl mx-auto text-gray-300 mb-8 md:mb-10 px-2">
+                    本協會專注「教你創業」。僱傭公司是少數不受經濟環境影響的行業，讓我們帶你避開雷區，掌握行業秘密。
+                </p>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-4 px-4">
+                    <a href="#seminar" class="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white rounded-full font-bold shadow-lg hover:bg-blue-500 transition duration-300 transform hover:-translate-y-1 flex items-center justify-center btn-text">
+                        <i class="fab fa-whatsapp mr-2"></i> 免費參加線上ZOOM分享會
+                    </a>
+                    <a href="#industry" class="w-full sm:w-auto px-8 py-4 bg-transparent border border-gray-600 text-gray-300 rounded-full font-bold shadow-lg hover:bg-white/5 hover:border-white hover:text-white transition duration-300 flex items-center justify-center btn-text">
+                        了解行業前景
+                    </a>
+                </div>
             </div>
-            <a href="https://wa.me/85296111003" target="_blank" class="wa-btn">
-                <i class="fa-brands fa-whatsapp text-3xl"></i> <span id="wa-text">WhatsApp 9611 1003</span>
-            </a>
-        </div>
-
-        <h2 id="public-title" class="text-3xl font-bold text-blue-900 mb-6 border-l-8 border-blue-500 pl-4">Employer List</h2>
-
-        <div id="public-records-container" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
-
-        <!-- 分頁 -->
-        <div id="pagination-controls" class="flex justify-center items-center gap-6 mt-10 mb-12 text-lg">
-            <button onclick="changePage(-1)" id="btn-prev" class="px-6 py-3 bg-white border rounded-lg hover:bg-gray-100 font-bold shadow">Prev</button>
-            <span id="page-indicator" class="font-bold text-gray-700">Page 1</span>
-            <button onclick="changePage(1)" id="btn-next" class="px-6 py-3 bg-white border rounded-lg hover:bg-gray-100 font-bold shadow">Next</button>
         </div>
     </section>
 
-    <script>
-        let employers = [];
-        const PASSWORD = 'admin@ADA2018';
-        let currentPage = 1;
-        const itemsPerPage = 10;
-        let currentLang = 'english';
-        const LOCAL_STORAGE_KEY = 'horizon_employers_offline_v3';
+    <!-- 行業優勢 (Industry Analysis) -->
+    <section id="industry" class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col gap-12 items-center">
+                <div class="w-full max-w-4xl text-center">
+                    <h2 class="text-blue-600 font-semibold tracking-wide mb-2 text-center nav-text">Why Choose Employment Company?</h2>
+                    <h2 class="text-gray-900 mb-6 text-center" style="font-size: 55px !important;">🧕🏻 為什麼選擇僱傭行業？</h2>
+                    
+                    <div class="text-gray-600 mb-6 leading-relaxed text-left md:text-center">
+                        <p>少數生意不受經濟環境影響的行業，無論面對以下任何挑戰，僱傭行業依然屹立不倒：</p>
+                    </div>
 
-        // --- 翻譯與地圖 ---
-        const locationMap = {
-            "中環": "Central", "金鐘": "Admiralty", "灣仔": "Wan Chai", "銅鑼灣": "Causeway Bay", "北角": "North Point",
-            "太古": "Tai Koo", "筲箕灣": "Shau Kei Wan", "柴灣": "Chai Wan", "尖沙咀": "Tsim Sha Tsui", "佐敦": "Jordan",
-            "油麻地": "Yau Ma Tei", "旺角": "Mong Kok", "太子": "Prince Edward", "深水埗": "Sham Shui Po", "長沙灣": "Cheung Sha Wan",
-            "荔枝角": "Lai Chi Kok", "美孚": "Mei Foo", "九龍塘": "Kowloon Tong", "黃大仙": "Wong Tai Sin", "鑽石山": "Diamond Hill",
-            "彩虹": "Choi Hung", "九龍灣": "Kowloon Bay", "牛頭角": "Ngau Tau Kok", "觀塘": "Kwun Tong", "藍田": "Lam Tin",
-            "調景嶺": "Tiu Keng Leng", "將軍澳": "Tseung Kwan O", "坑口": "Hang Hau", "寶琳": "Po Lam", "大圍": "Tai Wai",
-            "沙田": "Sha Tin", "火炭": "Fo Tan", "大學": "University", "大埔墟": "Tai Po Market", "太和": "Tai Wo",
-            "粉嶺": "Fanling", "上水": "Sheung Shui", "荃灣": "Tsuen Wan", "大窩口": "Tai Wo Hau", "葵興": "Kwai Hing",
-            "葵芳": "Kwai Fong", "青衣": "Tsing Yi", "東涌": "Tung Chung", "元朗": "Yuen Long", "屯門": "Tuen Mun", "天水圍": "Tin Shui Wai"
-        };
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                        <div class="flex items-center bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition">
+                            <i class="fas fa-chart-line text-red-500 mr-3 w-6 text-center btn-text"></i>
+                            <span class="text-gray-700">經濟衰退 📉</span>
+                        </div>
+                        <div class="flex items-center bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition">
+                            <i class="fas fa-virus text-green-500 mr-3 w-6 text-center btn-text"></i>
+                            <span class="text-gray-700">Covid-19流行病 😷</span>
+                        </div>
+                        <div class="flex items-center bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition">
+                            <i class="fas fa-shopping-bag text-orange-500 mr-3 w-6 text-center btn-text"></i>
+                            <span class="text-gray-700">北上消費 🇨🇳</span>
+                        </div>
+                        <div class="flex items-center bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition">
+                            <i class="fas fa-plane-departure text-blue-500 mr-3 w-6 text-center btn-text"></i>
+                            <span class="text-gray-700">移民潮 🇬🇧</span>
+                        </div>
+                        <div class="flex items-center bg-gray-50 p-3 rounded-lg sm:col-span-2">
+                            <i class="fas fa-robot text-orange-500 mr-3 w-6 text-center btn-text"></i>
+                            <span class="text-gray-700 font-normal">AI 人工智能 🤖</span>
+                        </div>
+                    </div>
+                </div>
 
-        const dict = {
-            '有工人房': { en: 'Yes, have own room', id: 'Ya, ada kamar sendiri' },
-            '與小孩同房': { en: 'Share room with kid', id: 'Berbagi kamar dengan anak' },
-            '與長者同房': { en: 'Share room with elderly', id: 'Berbagi kamar dengan lansia' },
-            '與另外傭同房': { en: 'Share with other helper', id: 'Berbagi dengan pembantu lain' },
-            '與女僱主同房': { en: 'Share with female employer', id: 'Berbagi dengan majikan wanita' },
-            '盡快': { en: 'ASAP', id: 'Secepatnya' },
-            '一月': { en: 'January', id: 'Januari' }, '二月': { en: 'February', id: 'Februari' }, '三月': { en: 'March', id: 'Maret' },
-            '四月': { en: 'April', id: 'April' }, '五月': { en: 'May', id: 'Mei' }, '六月': { en: 'June', id: 'Juni' },
-            '七月': { en: 'July', id: 'Juli' }, '八月': { en: 'August', id: 'Agustus' }, '九月': { en: 'September', id: 'September' },
-            '十月': { en: 'October', id: 'Oktober' }, '十一月': { en: 'November', id: 'November' }, '十二月': { en: 'December', id: 'Desember' },
-            '廣東話': { en: 'Cantonese', id: 'Kantonis' }, '英文': { en: 'English', id: 'Inggris' }, '普通話': { en: 'Mandarin', id: 'Mandarin' },
-            '英文&廣東話': { en: 'English & Cantonese', id: 'Inggris & Kantonis' }, '英文&普通話': { en: 'English & Mandarin', id: 'Inggris & Mandarin' },
-            // Pets
-            '小狗': { en: 'Small Dog', id: 'Anjing Kecil' }, '中狗': { en: 'Medium Dog', id: 'Anjing Sedang' }, '大狗': { en: 'Big Dog', id: 'Anjing Besar' },
-            '貓': { en: 'Cat', id: 'Kucing' }, '兔': { en: 'Rabbit', id: 'Kelinci' },
-            '鸚鵡': { en: 'Parrot', id: 'Burung Beo' }, '烏龜': { en: 'Turtle', id: 'Kura-kura' },
-            '其他': { en: 'Other', id: 'Lainnya' }, '沒有寵物': { en: 'No Pets', id: 'Tidak ada hewan peliharaan' }
-        };
+                <!-- 抗疫情/經濟韌性區塊 -->
+                <div class="w-full max-w-4xl bg-orange-50 rounded-2xl p-6 md:p-8 border border-orange-100 shadow-sm">
+                    <h3 class="font-bold text-orange-800 mb-3 flex items-center" style="font-size: 34px !important;">
+                        <i class="fas fa-shield-alt mr-2"></i> 經濟逆境下的避風港
+                    </h3>
+                    <p class="text-gray-700 leading-relaxed">
+                        餐廳遇上疫情會倒閉，按摩美容遇上北上消費也會倒閉，但僱傭服務是不受影響。因為在3年疫情裏僱主也要繼續請外傭、內地阿姨人工高過外傭工資，所以在當前經濟環境之下，僱傭業是非常有吸引力。
+                    </p>
+                </div>
 
-        // --- 初始化 ---
-        window.initApp = async function() {
-            document.getElementById('loading-overlay').style.opacity = '0';
-            setTimeout(() => document.getElementById('loading-overlay').style.display = 'none', 500);
-            if (window.isFirebaseMode && window.db) {
-                const q = window.query(window.collection(window.db, "employers"));
-                window.onSnapshot(q, (snapshot) => {
-                    employers = [];
-                    snapshot.forEach((doc) => employers.push({ ...doc.data(), docId: doc.id }));
-                    employers.sort((a, b) => a.id.localeCompare(b.id));
-                    refreshCurrentView();
-                });
-            } else {
-                const data = localStorage.getItem(LOCAL_STORAGE_KEY);
-                if (data) employers = JSON.parse(data);
-                refreshCurrentView();
-            }
-            switchTab('english');
-        };
-        function refreshCurrentView() {
-            if(!document.getElementById('admin-list-area').classList.contains('hidden')) renderAdminList();
-            if(!document.getElementById('page-public').classList.contains('hidden')) renderPublicList();
-        }
+                <!-- 剛性需求區塊 -->
+                <div class="w-full max-w-4xl relative">
+                    <div class="bg-indigo-50 rounded-3xl p-6 md:p-8 shadow-lg relative border border-indigo-100">
+                        <div class="absolute -top-4 -right-4 w-20 h-20 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70"></div>
+                        
+                        <h3 class="font-bold text-gray-900 mb-4" style="font-size: 34px !important;">☕️ 剛性需求</h3>
+                        <p class="text-gray-700 leading-relaxed mb-6">
+                            對於「用慣外傭」的人來講，請外傭是必需品。<br><br>
+                            「假期可以唔請，工人<span class="text-red-600 font-bold">唔可以</span>唔請」
+                        </p>
+                        <div class="flex items-center justify-center">
+                            <i class="fas fa-home text-indigo-200 transform transition hover:scale-110 duration-500" style="font-size: 68px;"></i>
+                        </div>
+                    </div>
+                </div>
 
-        // --- Validation Logic ---
-        window.validate = function(el) {
-            const err = el.parentElement.querySelector('.error-msg');
-            if(!el.value) {
-                el.classList.add('input-error');
-                if(err) err.classList.add('visible');
-            } else {
-                el.classList.remove('input-error');
-                if(err) err.classList.remove('visible');
-            }
-        }
-        window.validateMember = function(el) {
-            const err = document.getElementById('member-error');
-            if(!el.value) err.classList.add('visible');
-            else err.classList.remove('visible');
-        }
-        window.validatePet = function(el) {
-            const err = document.getElementById('pet-error');
-            if(!el.value) err.classList.add('visible');
-            else err.classList.remove('visible');
-        }
+                <!-- 外傭人口趨勢線圖 (SVG) -->
+                <div class="w-full max-w-4xl mt-4">
+                    <h3 class="font-bold text-gray-800 mb-6 text-center" style="font-size: 34px !important;">📈 外傭人口持續增長</h3>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm relative">
+                        <div class="absolute top-2 left-2 bg-gray-100 text-gray-500 px-2 py-1 rounded border border-gray-300" style="font-size: 26px;">
+                            入境處資料
+                        </div>
 
-        // --- 寵物邏輯 (新) ---
-        let currentPets = [];
-        
-        window.adjPet = function(v) {
-            let el = document.getElementById('pet-add-qty');
-            let n = parseInt(el.value) + v;
-            if(n < 1) n = 1;
-            el.value = n;
-        }
+                        <!-- SVG Line Chart -->
+                        <svg viewBox="0 0 400 200" class="w-full h-auto mt-4">
+                            <!-- X Axis -->
+                            <line x1="50" y1="150" x2="350" y2="150" stroke="#cbd5e1" stroke-width="2" />
+                            <text x="50" y="170" text-anchor="middle" fill="#64748b" font-size="12">2009年</text>
+                            <text x="200" y="170" text-anchor="middle" fill="#64748b" font-size="12">2019年</text>
+                            <text x="350" y="170" text-anchor="middle" fill="#64748b" font-size="12">2030年</text>
 
-        window.togglePetInputs = function() {
-            const type = document.getElementById('pet-add-type').value;
-            const qtyGroup = document.getElementById('pet-qty-group');
-            const otherGroup = document.getElementById('pet-other-group');
+                            <!-- Data Lines -->
+                            <polyline fill="none" stroke="#2563eb" stroke-width="3" points="50,110 200,80 350,40" />
+                            
+                            <!-- Data Points -->
+                            <circle cx="50" cy="110" r="5" fill="#2563eb" />
+                            <text x="50" y="100" text-anchor="middle" fill="#1e293b" font-weight="bold" font-size="12">26萬 (真實)</text>
 
-            qtyGroup.classList.add('hidden');
-            otherGroup.classList.add('hidden');
+                            <circle cx="200" cy="80" r="5" fill="#2563eb" />
+                            <text x="200" y="70" text-anchor="middle" fill="#1e293b" font-weight="bold" font-size="12">40萬 (真實)</text>
 
-            if (type === '其他') {
-                otherGroup.classList.remove('hidden');
-                qtyGroup.classList.remove('hidden');
-            } else if (type !== '沒有寵物' && type !== '') {
-                qtyGroup.classList.remove('hidden');
-            }
-        }
+                            <circle cx="350" cy="40" r="5" fill="#4f46e5" />
+                            <!-- 修改：60萬 font-size 改為 26px -->
+                            <text x="350" y="30" text-anchor="middle" fill="#4f46e5" font-weight="bold" font-size="16">
+                                <tspan style="font-size: 26px;">60萬</tspan>(推算)
+                            </text>
+                        </svg>
+                    </div>
+                    <div class="mt-6 text-center">
+                        <p class="text-gray-700 font-medium border-l-4 border-blue-500 pl-4 inline-block text-left bg-blue-50 p-4 rounded-r-lg">
+                            這不是潮流，這是市場需求量，只要香港人還有老人家和小朋友，這門生意就不會消失。
+                        </p>
+                    </div>
+                    
+                    <!-- 文案區域 -->
+                    <div class="mt-12 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 p-8 rounded-2xl text-center shadow-sm">
+                        <p class="text-gray-800 font-bold mb-4">
+                            你有無曾幾何時想過做生意？你想創業，但你唔識而放棄？
+                        </p>
+                        <p class="text-gray-800">
+                            現在全港 <span class="text-red-600 font-bold" style="font-size: 34px;">第一間</span> 專注教你創業，一個課程，令你走少5年冤枉路<br>
+                            相等於幫你慳 <span class="text-green-600 font-bold" style="font-size: 34px;">$150萬</span> (舖租 + 人工 x 5年)
+                        </p>
+                    </div>
 
-        window.addPetToList = function() {
-            const type = document.getElementById('pet-add-type').value;
-            const qty = document.getElementById('pet-add-qty').value;
-            
-            if (!type) { alert('請選擇寵物類型'); return; }
-            
-            // 如果選沒有寵物，清空列表並只加一項
-            if (type === '沒有寵物') {
-                currentPets = [{text: '沒有寵物'}];
-            } else {
-                if(currentPets.length === 1 && currentPets[0].text === '沒有寵物') currentPets = [];
-                
-                if (type === '其他') {
-                    const otherText = document.getElementById('inp-pets-other-text').value;
-                    if(!otherText) { alert('請以英文填寫寵物類型'); return; }
-                    currentPets.push({text: `${qty}${otherText}`});
-                    document.getElementById('inp-pets-other-text').value = '';
-                } else {
-                    const text = `${qty}${type}`;
-                    currentPets.push({text: text});
-                }
-            }
-            updatePetDisplay();
-            window.validatePet(document.getElementById('inp-pets-string'));
-        }
+                    <!-- $5萬開業揭秘 -->
+                    <div class="mt-10 bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 p-4 md:p-6 rounded-xl shadow-sm inline-block mx-auto max-w-4xl w-full">
+                        <h3 class="text-gray-800 font-bold mb-8" style="font-size: 34px !important;">
+                            《⚠️ 揭秘：如何用 $5萬 開業成本，加入香港年產值 20億 的剛需市場？》
+                        </h3>
 
-        window.removePet = function(idx) {
-            currentPets.splice(idx, 1);
-            updatePetDisplay();
-            window.validatePet(document.getElementById('inp-pets-string'));
-        }
+                        <!-- 課程流程圖 (Step 1-5) -->
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 relative mt-6">
+                            <div class="hidden md:block absolute top-8 left-0 w-full h-1 bg-gray-300 z-0" style="top: 25%;"></div>
 
-        function updatePetDisplay() {
-            const c = document.getElementById('pet-list-display');
-            if (currentPets.length === 0) {
-                c.innerHTML = '<span class="text-gray-400 italic self-center">尚未新增寵物</span>';
-                document.getElementById('inp-pets-string').value = '';
-            } else {
-                c.innerHTML = currentPets.map((p, i) => `
-                    <span class="bg-green-100 text-green-800 px-3 py-2 rounded text-base flex items-center">
-                        ${p.text} <button type="button" onclick="removePet(${i})" class="ml-2 text-red-500 hover:text-red-700 font-bold">&times;</button>
-                    </span>
-                `).join('');
-                document.getElementById('inp-pets-string').value = currentPets.map(p=>p.text).join(', ');
-            }
-        }
+                            <!-- Step 1 -->
+                            <div class="relative z-10 bg-white p-4 rounded-lg shadow-md border border-gray-100 flex flex-col items-center">
+                                <div class="w-12 h-12 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-lg">1</div>
+                                <h4 class="font-bold text-gray-900 mb-2">上堂</h4>
+                                <p class="text-gray-600" style="font-size: 18px !important;">購買課堂，掌握行業知識</p>
+                            </div>
 
-        // --- 薪金控制 ---
-        window.adjustSalary = function(val) {
-            let el = document.getElementById('inp-salary');
-            let v = parseInt(el.value);
-            if(isNaN(v)) v = 5100;
-            v += val;
-            if(v < 5100) v = 5100;
-            el.value = v;
-            window.validate(el);
-        }
+                            <!-- Step 2 -->
+                            <div class="relative z-10 bg-white p-4 rounded-lg shadow-md border border-gray-100 flex flex-col items-center">
+                                <div class="w-12 h-12 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-lg">2</div>
+                                <h4 class="font-bold text-gray-900 mb-2">選址</h4>
+                                <p class="text-gray-600" style="font-size: 18px !important;">教授租舖技巧 (地下舖 vs 商場舖 vs 樓上舖)</p>
+                            </div>
 
-        // --- 工人房邏輯 ---
-        window.toggleRoomOther = function() {
-            const v = document.getElementById('inp-room').value;
-            if(v === '其他') document.getElementById('inp-room-other').classList.remove('hidden');
-            else document.getElementById('inp-room-other').classList.add('hidden');
-        }
+                            <!-- Step 3 -->
+                            <div class="relative z-10 bg-white p-4 rounded-lg shadow-md border border-gray-100 flex flex-col items-center">
+                                <div class="w-12 h-12 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-lg">3</div>
+                                <h4 class="font-bold text-gray-900 mb-2">牌照</h4>
+                                <p class="text-gray-600" style="font-size: 18px !important;">協助申請牌照</p>
+                            </div>
 
-        // --- 國籍邏輯 ---
-        window.toggleNatOther = function() {
-            const v = document.getElementById('inp-nationality').value;
-            if(v === 'Other') document.getElementById('inp-nationality-other').classList.remove('hidden');
-            else document.getElementById('inp-nationality-other').classList.add('hidden');
-        }
+                            <!-- Step 4 -->
+                            <div class="relative z-10 bg-white p-4 rounded-lg shadow-md border border-gray-100 flex flex-col items-center">
+                                <div class="w-12 h-12 bg-pink-600 text-white rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-lg">4</div>
+                                <h4 class="font-bold text-gray-900 mb-2">開張</h4>
+                                <p class="text-gray-600" style="font-size: 18px !important;">導師手把手沿途支援</p>
+                            </div>
 
-        // --- 資料儲存 ---
-        window.handleSave = async function() {
-            const btn = document.getElementById('btn-save');
-            btn.disabled = true;
-            document.getElementById('btn-save-text').innerText = "處理中...";
-            const isFishing = !document.getElementById('fishing-header').classList.contains('hidden');
-            
-            try {
-                const id = document.getElementById('inp-id').value;
-                const loc = document.getElementById('inp-location').value;
-                let nat = document.getElementById('inp-nationality').value;
-                if (nat === 'Other') nat = document.getElementById('inp-nationality-other').value;
-
-                const memStr = document.getElementById('inp-members-string').value;
-                const petStr = document.getElementById('inp-pets-string').value;
-                let room = document.getElementById('inp-room').value;
-                if(room === '其他') room = document.getElementById('inp-room-other').value;
-                
-                const date = document.getElementById('inp-date').value;
-                const salary = document.getElementById('inp-salary').value;
-                const lang = document.getElementById('inp-lang').value;
-                
-                // 檢查是否所有欄位已填 (Trigger validators)
-                const inputs = document.querySelectorAll('#employer-form input, #employer-form select');
-                let hasError = false;
-                inputs.forEach(i => {
-                    if(i.id !== 'inp-remarks' && !i.hidden && !i.value) { // Skip hidden and remarks
-                        // Special check for dynamic lists
-                        if(i.id === 'inp-members-string' || i.id === 'inp-pets-string') {
-                            if(!i.value) hasError = true;
-                        } else if(i.id.includes('other') && i.classList.contains('hidden')) {
-                            // ignore hidden other
-                        } else if(i.id.includes('add')) {
-                            // ignore add controls
-                        } else {
-                            if(i.tagName === 'SELECT' && i.value === '') hasError = true;
-                            if(i.tagName === 'INPUT' && i.value === '') hasError = true;
-                        }
-                    }
-                });
-                
-                // Force validate display
-                window.validate(document.getElementById('inp-id'));
-                window.validate(document.getElementById('inp-location'));
-                window.validate(document.getElementById('inp-nationality'));
-                window.validate(document.getElementById('inp-room'));
-                window.validate(document.getElementById('inp-date'));
-                window.validate(document.getElementById('inp-salary'));
-                window.validate(document.getElementById('inp-lang'));
-                window.validateMember(document.getElementById('inp-members-string'));
-                window.validatePet(document.getElementById('inp-pets-string'));
-
-                if (!id || !loc || !nat || !memStr || !petStr || !room || !date || !salary || !lang) {
-                    throw new Error('你漏寫了問題，請檢查和填寫所有問題才可以上載成功');
-                }
-                
-                if (parseInt(salary) < 5100) {
-                    alert('薪金錯誤，重新填寫');
-                    throw new Error('薪金錯誤');
-                }
-
-                const data = {
-                    id, location: loc, nationality: nat, members: memStr, pets: petStr, room, date, salary, lang,
-                    remarks: document.getElementById('inp-remarks').value,
-                    active: true,
-                    updatedAt: new Date().toISOString()
-                };
-                
-                const docId = document.getElementById('edit-doc-id').value;
-
-                if (window.isFirebaseMode) {
-                    if (docId) await window.updateDoc(window.doc(window.db, "employers", docId), data);
-                    else await window.addDoc(window.collection(window.db, "employers"), data);
-                } else {
-                    if (docId) {
-                        const idx = employers.findIndex(e => e.docId === docId);
-                        if (idx !== -1) employers[idx] = { ...data, docId }; 
-                    } else {
-                        data.docId = String(Date.now());
-                        employers.push(data);
-                    }
-                    employers.sort((a, b) => a.id.localeCompare(b.id));
-                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(employers));
-                    refreshCurrentView();
-                }
-                
-                if (isFishing) {
-                    alert('上載成功及已上架');
-                    switchAdminSub('list');
-                } else {
-                    if (docId) alert('資料已更改及上架');
-                    else alert('上載成功及已上架');
-                    resetForm();
-                }
-
-            } catch (e) {
-                if(!e.message.includes('薪金錯誤')) alert(e.message);
-            } finally {
-                btn.disabled = false;
-                document.getElementById('btn-save-text').innerText = "上載資料";
-            }
-        };
-
-        window.toggleActive = async function(docId, currentStatus) {
-            if (window.isFirebaseMode) {
-                await window.updateDoc(window.doc(window.db, "employers", docId), { active: !currentStatus });
-            } else {
-                const emp = employers.find(e => e.docId === docId);
-                if(emp) {
-                    emp.active = !currentStatus;
-                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(employers));
-                    refreshCurrentView();
-                }
-            }
-        };
-
-        window.deleteEmp = async function(docId) {
-            if(!confirm('確認刪除？這將永久移除資料。')) return;
-            if(!confirm('再次確認：您確定要永久刪除此資料嗎？')) return;
-            if(window.isFirebaseMode) {
-                await window.deleteDoc(window.doc(window.db, "employers", docId));
-            } else {
-                const idx = employers.findIndex(e => e.docId === docId);
-                if(idx > -1) {
-                    employers.splice(idx, 1);
-                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(employers));
-                    refreshCurrentView();
-                }
-            }
-        };
-
-        window.editEmp = function(docId) {
-            const e = employers.find(emp => emp.docId === docId);
-            if(!e) return;
-            document.getElementById('inp-id').value = e.id;
-            document.getElementById('inp-location').value = e.location;
-            
-            // Nat
-            const stdNat = ['Filipino','Indonesian','Filipino & Indonesian','Indonesian & Filipino'];
-            if(stdNat.includes(e.nationality)) {
-                document.getElementById('inp-nationality').value = e.nationality;
-                toggleNatOther();
-            } else {
-                document.getElementById('inp-nationality').value = 'Other';
-                toggleNatOther();
-                document.getElementById('inp-nationality-other').value = e.nationality;
-            }
-
-            document.getElementById('inp-room').value = e.room; 
-            if(e.room && !['有工人房','有工人房','與小孩同房','與長者同房','與另外傭同房','與女僱主同房'].includes(e.room)){
-                 // Simple logic for custom room
-                 document.getElementById('inp-room').value = '其他';
-                 toggleRoomOther();
-                 document.getElementById('inp-room-other').value = e.room;
-            }
-
-            document.getElementById('inp-date').value = e.date;
-            document.getElementById('inp-salary').value = e.salary;
-            document.getElementById('inp-lang').value = e.lang;
-            document.getElementById('inp-remarks').value = e.remarks || '';
-            document.getElementById('edit-doc-id').value = docId;
-            
-            currentMembers = [];
-            e.members.split(', ').forEach(p => currentMembers.push({text: p}));
-            updateMemberDisplay();
-
-            currentPets = [];
-            if(e.pets) e.pets.split(', ').forEach(p => currentPets.push({text: p}));
-            updatePetDisplay();
-
-            switchAdminSub('input');
-            window.scrollTo(0,0);
-        };
-
-        // --- 導航與管理 UI ---
-        window.switchTab = function(tab) {
-            document.getElementById('page-login').classList.add('hidden-section');
-            document.getElementById('page-admin').classList.add('hidden-section');
-            document.getElementById('page-public').classList.add('hidden-section');
-            document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
-            document.getElementById('nav-' + tab).classList.add('active');
-
-            if (tab === 'admin') {
-                if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
-                    document.getElementById('page-admin').classList.remove('hidden-section');
-                    switchAdminSub('input');
-                } else {
-                    document.getElementById('page-login').classList.remove('hidden-section');
-                }
-            } else {
-                document.getElementById('page-public').classList.remove('hidden-section');
-                currentLang = tab;
-                currentPage = 1;
-                renderPublicList();
-            }
-        };
-
-        window.checkLogin = function() {
-            if (document.getElementById('admin-password').value === PASSWORD) {
-                sessionStorage.setItem('isAdminLoggedIn', 'true');
-                document.getElementById('login-error').classList.add('hidden');
-                document.getElementById('admin-password').value = '';
-                switchTab('admin');
-            } else {
-                document.getElementById('login-error').classList.remove('hidden');
-            }
-        };
-
-        window.switchAdminSub = function(sub) {
-            document.getElementById('admin-input-area').classList.add('hidden');
-            document.getElementById('admin-list-area').classList.add('hidden');
-            document.getElementById('fishing-header').classList.add('hidden');
-            document.getElementById('fishing-footer').classList.add('hidden');
-
-            if (sub === 'input') {
-                document.getElementById('admin-input-area').classList.remove('hidden');
-                if(document.getElementById('edit-doc-id').value === '') resetForm();
-            } else if (sub === 'fishing') {
-                document.getElementById('admin-input-area').classList.remove('hidden');
-                document.getElementById('fishing-header').classList.remove('hidden');
-                document.getElementById('fishing-footer').classList.remove('hidden');
-                generateFishingData();
-            } else if (sub === 'list') {
-                document.getElementById('admin-list-area').classList.remove('hidden');
-                renderAdminList();
-            }
-        };
-
-        function renderAdminList() {
-            const c = document.getElementById('admin-records-container');
-            c.innerHTML = '';
-            document.getElementById('db-status-text').innerText = window.isFirebaseMode ? "(Firebase Cloud)" : "(Offline Local Storage)";
-            if(employers.length === 0) { c.innerHTML = '<p class="text-center text-gray-400 text-lg">暫無資料</p>'; return; }
-
-            employers.forEach((e) => {
-                const status = e.active ? '<span class="text-green-600 font-bold">[上架中]</span>' : '<span class="text-red-600 font-bold">[已下架]</span>';
-                const html = `
-                    <div class="bg-white p-6 rounded-lg shadow border border-l-8 ${e.active ? 'border-l-green-500' : 'border-l-red-500'}">
-                        <div class="flex flex-col sm:flex-row justify-between items-start mb-4 border-b pb-4">
-                            <h4 class="font-bold text-2xl text-blue-800">${e.id} ${status}</h4>
-                            <div class="space-x-4 mt-2 sm:mt-0">
-                                <button onclick="editEmp('${e.docId}')" class="bg-blue-100 text-blue-700 px-4 py-2 rounded font-bold hover:bg-blue-200">修改</button>
-                                <button onclick="toggleActive('${e.docId}', ${e.active})" class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded font-bold hover:bg-yellow-200">${e.active ? '下架' : '上架'}</button>
-                                <button onclick="deleteEmp('${e.docId}')" class="bg-red-100 text-red-700 px-4 py-2 rounded font-bold hover:bg-red-200">刪除</button>
+                            <!-- Step 5 -->
+                            <div class="relative z-10 bg-white p-4 rounded-lg shadow-md border border-gray-100 flex flex-col items-center">
+                                <div class="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-lg">5</div>
+                                <h4 class="font-bold text-gray-900 mb-2">營運賺錢</h4>
+                                <p class="text-gray-600" style="font-size: 18px !important;">教授搵客人、搵外傭、搵資源</p>
                             </div>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-lg text-gray-700">
-                            <p><span class="font-bold text-gray-500">地區:</span> ${e.location}</p>
-                            <p><span class="font-bold text-gray-500">國籍:</span> ${e.nationality || '-'}</p>
-                            <p><span class="font-bold text-gray-500">成員:</span> ${e.members}</p>
-                            <p><span class="font-bold text-gray-500">寵物:</span> ${e.pets}</p>
-                            <p><span class="font-bold text-gray-500">房間:</span> ${e.room}</p>
-                            <p><span class="font-bold text-gray-500">日期:</span> ${e.date}</p>
-                            <p><span class="font-bold text-gray-500">薪金:</span> $${e.salary}</p>
-                            <p><span class="font-bold text-gray-500">語言:</span> ${e.lang}</p>
-                            <p class="col-span-full"><span class="font-bold text-gray-500">備註:</span> ${e.remarks || '-'}</p>
+                    </div>
+
+                    <!-- 日常工作流程 (新區域) -->
+                    <div class="mt-10 p-6 rounded-xl border-2 border-dashed border-gray-300 w-full max-w-4xl mx-auto">
+                        <h3 class="text-gray-800 font-bold mb-8 text-center" style="font-size: 34px !important;">日常工作流程</h3>
+                        
+                        <div class="flex flex-col md:flex-row items-center justify-between gap-4 mt-6">
+                            <!-- Step 1 -->
+                            <div class="flex-1 bg-white p-3 rounded-lg shadow-sm border border-orange-100 flex flex-col items-center w-full">
+                                <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold mb-2">1</div>
+                                <span class="font-bold text-gray-800 text-center">面試外傭</span>
+                            </div>
+                            <div class="hidden md:block text-orange-300"><i class="fas fa-arrow-right"></i></div>
+                            <div class="md:hidden text-orange-300"><i class="fas fa-arrow-down"></i></div>
+
+                            <!-- Step 2 -->
+                            <div class="flex-1 bg-white p-3 rounded-lg shadow-sm border border-orange-100 flex flex-col items-center w-full">
+                                <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold mb-2">2</div>
+                                <span class="font-bold text-gray-800 text-center">回覆僱主</span>
+                            </div>
+                            <div class="hidden md:block text-orange-300"><i class="fas fa-arrow-right"></i></div>
+                            <div class="md:hidden text-orange-300"><i class="fas fa-arrow-down"></i></div>
+
+                            <!-- Step 3 -->
+                            <div class="flex-1 bg-white p-3 rounded-lg shadow-sm border border-orange-100 flex flex-col items-center w-full">
+                                <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold mb-2">3</div>
+                                <span class="font-bold text-gray-800 text-center">配對雙方</span>
+                            </div>
+                            <div class="hidden md:block text-orange-300"><i class="fas fa-arrow-right"></i></div>
+                            <div class="md:hidden text-orange-300"><i class="fas fa-arrow-down"></i></div>
+
+                            <!-- Step 4 -->
+                            <div class="flex-1 bg-white p-3 rounded-lg shadow-sm border border-orange-100 flex flex-col items-center w-full">
+                                <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold mb-2">4</div>
+                                <span class="font-bold text-gray-800 text-center">簽約收錢</span>
+                            </div>
+                            <div class="hidden md:block text-orange-300"><i class="fas fa-arrow-right"></i></div>
+                            <div class="md:hidden text-orange-300"><i class="fas fa-arrow-down"></i></div>
+
+                            <!-- Step 5 -->
+                            <div class="flex-1 bg-white p-3 rounded-lg shadow-sm border border-orange-100 flex flex-col items-center w-full">
+                                <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold mb-2">5</div>
+                                <span class="font-bold text-gray-800 text-center">代辦文件</span>
+                            </div>
+                            <div class="hidden md:block text-orange-300"><i class="fas fa-arrow-right"></i></div>
+                            <div class="md:hidden text-orange-300"><i class="fas fa-arrow-down"></i></div>
+
+                            <!-- Step 6 -->
+                            <div class="flex-1 bg-white p-3 rounded-lg shadow-sm border border-orange-100 flex flex-col items-center w-full">
+                                <div class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center font-bold mb-2">6</div>
+                                <span class="font-bold text-gray-800 text-center">重複工作</span>
+                            </div>
                         </div>
                     </div>
-                `;
-                c.innerHTML += html;
-            });
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 學生見證 (Student Testimonials) -->
+    <section id="testimonials" class="py-16 md:py-24 bg-slate-100">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-blue-600 font-semibold tracking-wide mb-2 text-center nav-text">What Our Students Are Saying</h2>
+                <h2 class="text-gray-900 mb-4" style="font-size: 55px !important;">🗣️ 學生見證</h2>
+                <p class="text-gray-600">聽聽我們的學生如何評價課程與導師的支援。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <!-- 見證 1 (P005) -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col">
+                    <div class="w-full overflow-hidden" style="aspect-ratio: 1500 / 927;">
+                        <img src="./P005.jpg" alt="學生見證 1" class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col justify-center">
+                        <div class="text-blue-500 mb-4" style="font-size: 42px;"><i class="fas fa-quote-left"></i></div>
+                        <p class="text-gray-700 italic mb-4">
+                            「我已經係中年，由零學起，老師非常有耐心教我，因為我乜都唔識我乜都問，有老師教我無咁徬徨」
+                        </p>
+                        <div class="mt-auto">
+                            <span class="block font-bold text-gray-900" style="font-size: 26px;">— Adam</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 見證 2 (P006) -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col">
+                    <div class="w-full overflow-hidden" style="aspect-ratio: 1500 / 927;">
+                        <img src="./P006.JPG" alt="學生見證 2" class="w-full h-full object-cover transform hover:scale-105 transition duration-500">
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col justify-center">
+                        <div class="text-green-500 mb-4" style="font-size: 42px;"><i class="fas fa-quote-left"></i></div>
+                        <p class="text-gray-700 italic mb-4">
+                            「我連租office都會問阿sir，阿sir講解好好，每個問題都錄音4-5分鐘去解釋，詳細到我唔想聽，哈哈」
+                        </p>
+                        <div class="mt-auto">
+                            <span class="block font-bold text-gray-900" style="font-size: 26px;">— MIMI</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 客人見證 (Client Testimonials) -->
+    <section id="client-testimonials" class="py-16 md:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-gray-900 mb-4" style="font-size: 55px !important;">🤝 客人見證</h2>
+                <p class="text-gray-600">真實客戶好評，服務質素有保證。</p>
+            </div>
+            <!-- Grid for 6 images -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-slate-50 rounded-xl overflow-hidden shadow-md"><img src="./P001.jpg" alt="客人見證" class="w-full h-auto"></div>
+                <div class="bg-slate-50 rounded-xl overflow-hidden shadow-md"><img src="./P002.jpg" alt="客人見證" class="w-full h-auto"></div>
+                <div class="bg-slate-50 rounded-xl overflow-hidden shadow-md"><img src="./P003.jpg" alt="客人見證" class="w-full h-auto"></div>
+                <div class="bg-slate-50 rounded-xl overflow-hidden shadow-md"><img src="./P004.jpg" alt="客人見證" class="w-full h-auto"></div>
+                <div class="bg-slate-50 rounded-xl overflow-hidden shadow-md"><img src="./P007.jpg" alt="客人見證" class="w-full h-auto"></div>
+                <div class="bg-slate-50 rounded-xl overflow-hidden shadow-md"><img src="./P008.jpg" alt="客人見證" class="w-full h-auto"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 外傭見證 (Helper Testimonials) -->
+    <section id="helper-testimonials" class="py-16 md:py-24 bg-slate-100">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <h2 class="text-gray-900 mb-4" style="font-size: 55px !important;">🌍 外傭見證</h2>
+                <p class="text-gray-600">我們不僅服務僱主，也深受外傭信賴。</p>
+            </div>
+            <!-- Grid for 3 images (Updated) -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg"><img src="./P009.jpg" alt="外傭見證" class="w-full h-auto"></div>
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg"><img src="./P010.jpg" alt="外傭見證" class="w-full h-auto"></div>
+                <!-- 新增 P011 -->
+                <div class="bg-white rounded-xl overflow-hidden shadow-lg"><img src="./P011.jpg" alt="外傭見證" class="w-full h-auto"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 服務內容 (Services Section) -->
+    <section id="services" class="py-16 md:py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+                <h2 class="text-blue-600 font-semibold tracking-wide mb-2" style="font-size: 26px !important;">What We Teach</h2>
+                <h2 class="text-gray-900 mb-4" style="font-size: 55px !important;">🎓 我們的專業課程</h2>
+                <p class="text-gray-600">無論你想創業做老闆，還是做一個精明的僱主，我們都有適合你的方案。</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
+                <!-- Card 1: 教你創業 -->
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-blue-500 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                        <i class="fas fa-briefcase text-blue-600" style="font-size: 68px;"></i>
+                    </div>
+                    <div class="w-14 h-14 md:w-16 md:h-16 bg-blue-100 rounded-full flex items-center justify-center mb-6 text-blue-600 z-10 relative">
+                        <i class="fas fa-rocket" style="font-size: 34px;"></i>
+                    </div>
+                    <h3 class="text-gray-900 mb-4" style="font-size: 34px !important;">💪 教你創業</h3>
+                    <p class="text-gray-500 mb-6">前僱傭公司老闆成為你導師，走少5年冤枉路。你適唔適合創業？你睇睇免費分享會再決定</p>
+                    <ul class="space-y-3 text-gray-600 z-10 relative">
+                        <li class="flex items-start"><i class="fas fa-check-circle text-blue-500 mr-2 mt-1 flex-shrink-0"></i> <span>分析創業各行業比較 🔍</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-blue-500 mr-2 mt-1 flex-shrink-0"></i> <span>分析僱傭業好處缺點 💡</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-blue-500 mr-2 mt-1 flex-shrink-0"></i> <span>教授：開業、行政、營運、發展、財政👩‍🏫</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-blue-500 mr-2 mt-1 flex-shrink-0"></i> <span>行業秘密、知識 🪄</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-blue-500 mr-2 mt-1 flex-shrink-0"></i> <span>開張流程、成本結構、周邊伙伴、技巧傳授、工具介紹 🛠️</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-blue-500 mr-2 mt-1 flex-shrink-0"></i> <span>搵客方法、搵外傭方法、搵舖技巧 🎯</span></li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: 教你做僱主 -->
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl transition duration-300 border-t-4 border-green-500 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                        <i class="fas fa-users text-green-600" style="font-size: 68px;"></i>
+                    </div>
+                    <div class="w-14 h-14 md:w-16 md:h-16 bg-green-100 rounded-full flex items-center justify-center mb-6 text-green-600 z-10 relative">
+                        <i class="fas fa-user-check" style="font-size: 34px;"></i>
+                    </div>
+                    <h3 class="text-gray-900 mb-4" style="font-size: 34px !important;">🧮 唔創業都得，教你做僱主</h3>
+                    <p class="text-gray-500 mb-6">前僱傭公司老闆教你行業秘密，助你做個精明僱主，避免不必要的損失與麻煩</p>
+                    <ul class="space-y-3 text-gray-600 z-10 relative">
+                        <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i> <span>教你揀選好外傭 🧕🏻</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i> <span>教你填寫申請表格✍🏻</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i> <span>避免外傭財務借錢 💸</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i> <span>避雷僱傭公司⚡</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i> <span>請外傭慳錢方法 💰</span></li>
+                        <li class="flex items-start"><i class="fas fa-check-circle text-green-500 mr-2 mt-1 flex-shrink-0"></i> <span>常見問題、犯法位 💯</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 分享會資訊 (Seminar Section) -->
+    <section id="seminar" class="py-16 md:py-24 bg-white overflow-hidden">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-block p-4 rounded-full bg-red-100 mb-6">
+                <i class="fas fa-fire text-red-500 text-2xl animate-pulse"></i>
+            </div>
+            <h2 class="text-gray-900 mb-4" style="font-size: 55px !important;">🎟️ 收生有限，額滿即止</h2>
+            
+            <!-- 倒數計時器 -->
+            <div class="flex flex-col md:flex-row items-center justify-center gap-4 mb-8">
+                <div class="bg-red-500 text-white rounded-lg px-6 py-3 shadow-lg flex items-center animate-bounce-slow">
+                    <i class="fas fa-clock mr-3" style="font-size: 26px;"></i>
+                    <span class="font-bold mr-2" style="font-size: 26px;">截止時間：</span>
+                    <span id="countdown" class="font-mono font-bold" style="font-size: 26px;">計算中...</span>
+                </div>
+                <div class="text-red-600 font-bold border border-red-200 bg-red-50 px-4 py-2 rounded-lg" style="font-size: 26px;">
+                    本月只剩餘 2 個名額
+                </div>
+            </div>
+
+            <p class="text-gray-600 mb-12">
+                機會不等人，立即報名我們的免費線上ZOOM分享會，了解更多行業內幕。
+            </p>
+            
+            <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden">
+                <div class="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+                
+                <div class="relative z-10">
+                    <h3 class="text-white font-bold mb-8" style="font-size: 34px !important;">📺 免費參加線上ZOOM分享會</h3>
+                    
+                    <!-- 重點內容 (Tags 風格) -->
+                    <div class="flex flex-wrap justify-center gap-3 md:gap-4 mb-10">
+                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-gray-200">你自己會賺幾多錢？$xx萬每月</span>
+                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-gray-200">市場總額$xx億</span>
+                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-gray-200">驚快的回本期</span>
+                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-gray-200">開業成本：出乎意料的低</span>
+                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-gray-200">僱傭公司開設流程</span>
+                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-gray-200">如何選擇好外傭</span>
+                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-gray-200">教你10年生意版圖</span>
+                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-gray-200">其他生意 VS 僱傭公司的優點缺點</span>
+                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-gray-200">創業僱傭公司的好處</span>
+                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-gray-200">成本結構</span>
+                        <span class="px-4 py-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-gray-200">外傭人口60萬</span>
+                    </div>
+
+                    <a href="https://wa.me/85294422414" target="_blank" class="inline-flex items-center justify-center w-full md:w-auto px-6 md:px-8 py-4 bg-green-500 hover:bg-green-600 text-white font-bold rounded-full shadow-lg transition transform hover:scale-105 btn-text">
+                        <i class="fab fa-whatsapp text-2xl mr-3"></i>
+                        按此鍵 WhatsApp 本協會
+                    </a>
+                    <p class="mt-4 text-gray-400 text-sm" style="font-size: 18px !important;">點擊上面按鈕會直接跳轉至 WhatsApp 對話</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 常見問題 (FAQ Section) -->
+    <section id="faq" class="py-16 bg-white border-t border-gray-100">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-blue-600 font-semibold tracking-wide mb-2" style="font-size: 26px !important;">Frequently Asked Questions</h2>
+                <h2 class="text-gray-900" style="font-size: 55px !important;">⁉️ 常見問題</h2>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Question 1 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>分享會的收費？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        $0，分享會是免費。你適唔適合創業，你可以參加免費線上分享會再決定
+                    </div>
+                </details>
+
+                <!-- Question 2 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>分享會的地點？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        線上ZOOM，隨時隨地參加
+                    </div>
+                </details>
+
+                <!-- Question 3 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>分享會的語言？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        全程廣東話
+                    </div>
+                </details>
+
+                <!-- Question 4 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>分享會聽幾耐？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        45分鐘 至 60分鐘
+                    </div>
+                </details>
+
+                <!-- Question 5 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>分享會要報名？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        請 WhatsApp 與我們留座，每晚 8:00 分享會，為保持教學質素會以「一對一」進行，收生有限，額滿即止
+                    </div>
+                </details>
+
+                <!-- Question: 導師資歷 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>導師資歷？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        導師創辦自己僱傭公司 2017-2025，8年經驗和專業知識十分豐富
+                    </div>
+                </details>
+
+                <!-- Question: 零經驗 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>我唔識開公司、唔識申請牌照，甚至邊到買傢俬儀器工具都一頭霧水？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        放心，本課程專為「零創業、零僱傭」人士而設立，所有屬於公司和僱傭問題都會一一教授你
+                    </div>
+                </details>
+
+                <!-- Question 6 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>創業需要行業經驗？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        零經驗，導師也是新手創業，導師創業前也沒有在任何僱傭公司打工
+                    </div>
+                </details>
+
+                <!-- Question 7 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>需唔需要請員工或購買特別生財工具？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        零員工，零工具，1人1舖1檯1電腦1手機1打印機，就可以營運日常公司
+                    </div>
+                </details>
+
+                <!-- Question 8 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>創業開業成本？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        非常低開業成本，低至$5萬
+                    </div>
+                </details>
+
+                <!-- Question 9 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>創業後營運僱傭公司複雜嗎？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        萬事起頭難，所以導師會教導你一切須知和協助你創業，當你學習和上手後，你會發現營運公司簡單過你打工
+                    </div>
+                </details>
+
+                <!-- Question 10 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>創業後，導師仍然會提供幫助或售後服務？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        一定會，導師不單止會提供課程內容，還會協助你申請牌照、開張、營運、經驗傳承等一切的後期支援，6個月的沿路解決
+                    </div>
+                </details>
+
+                <!-- Question 11 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>課程是睇影片？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        不會睇影片，課程是「一對一」教學，線上直播教學，因為你即時有疑問，導師即時為你解答
+                    </div>
+                </details>
+
+                <!-- Question 12 -->
+                <details class="group bg-slate-50 rounded-xl p-4 cursor-pointer">
+                    <summary class="flex justify-between items-center font-bold text-gray-800">
+                        <span>聯絡我們？</span>
+                        <span class="transition group-open:rotate-180">
+                            <i class="fas fa-chevron-down text-blue-500"></i>
+                        </span>
+                    </summary>
+                    <div class="text-gray-600 mt-3 pl-2 border-l-2 border-blue-500">
+                        請 WhatsApp 9442 2414 與我們聯絡
+                    </div>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- 聯絡我們 (Contact Section) -->
+    <section id="contact" class="py-16 bg-slate-50 border-t border-gray-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-blue-600 font-semibold tracking-wide mb-2" style="font-size: 26px !important;">Contact Us</h2>
+            <h2 class="text-gray-900 mb-8" style="font-size: 55px !important;">聯絡我們</h2>
+            
+            <!-- 聯絡方式容器 -->
+            <div class="flex flex-col md:flex-row justify-center gap-6">
+                <!-- WhatsApp -->
+                <a href="https://wa.me/85294422414" target="_blank" class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 flex flex-col items-center group border border-gray-100 w-full md:max-w-sm">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition duration-300">
+                        <i class="fab fa-whatsapp text-green-500" style="font-size: 42px;"></i>
+                    </div>
+                    <h4 class="text-gray-800 mb-2 font-bold" style="font-size: 26px;">WhatsApp</h4>
+                    <p class="text-green-600 font-bold" style="font-size: 34px;">9442 2414</p>
+                    <span class="text-gray-400 mt-2">點擊立即聯絡</span>
+                </a>
+
+                <!-- Facebook (修改) -->
+                <a href="https://m.me/HKESA.org" target="_blank" class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition duration-300 flex flex-col items-center group border border-gray-100 w-full md:max-w-sm">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition duration-300">
+                        <!-- 修改 icon 為 fa-facebook -->
+                        <i class="fab fa-facebook text-blue-500" style="font-size: 42px;"></i>
+                    </div>
+                    <h4 class="text-gray-800 mb-2 font-bold" style="font-size: 26px;">Facebook</h4>
+                    <!-- 移除 Messenger 文字，保留 Facebook 作為主要標識 -->
+                    <span class="text-gray-400 mt-2">點擊立即聯絡</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 頁尾 (Footer) -->
+    <footer class="bg-slate-900 border-t border-slate-800 pt-12 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center gap-2 text-white font-bold mb-4" style="font-size: 26px;">
+                    香港僱傭服務協會
+                </div>
+                <p class="text-gray-400 leading-relaxed mb-8">
+                    教你創業，教你做精明僱主。
+                </p>
+                <p class="text-gray-500">
+                    &copy; 2025 香港僱傭服務協會. All rights reserved. 
+                    <!-- 更新版本號至 V1.11 -->
+                    <span style="color: #0f172a;">V1.11</span>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
         }
 
-        // --- 成員輸入 ---
-        let currentMembers = [];
-        window.toggleAgeInput = function() {
-            const type = document.getElementById('mem-type').value;
-            const group = document.getElementById('age-input-group');
-            if (type === '成人') group.classList.add('hidden'); 
-            else group.classList.remove('hidden');
-        };
-        window.addMember = function() {
-            const type = document.getElementById('mem-type').value;
-            const age = document.getElementById('mem-age').value;
-            
-            if (type !== '成人' && !age) { alert('請輸入年齡'); return; }
-            const text = (type === '成人') ? "1成人" : `1${type}(${age}歲)`;
-            currentMembers.push({text});
-            updateMemberDisplay();
-            document.getElementById('mem-age').value = '';
-            window.validateMember(document.getElementById('inp-members-string'));
-        };
-        window.removeMember = function(i) {
-            currentMembers.splice(i, 1);
-            updateMemberDisplay();
-            window.validateMember(document.getElementById('inp-members-string'));
-        };
-        function updateMemberDisplay() {
-            const c = document.getElementById('member-list-display');
-            c.innerHTML = currentMembers.map((m,i)=>`<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded text-base flex items-center">${m.text} <button type="button" onclick="removeMember(${i})" class="ml-2 text-red-500 font-bold">&times;</button></span>`).join('');
-            let s = currentMembers.map(m=>m.text); 
-            // Simplified summary logic for display string in admin not strictly needed, saving full list
-            document.getElementById('inp-members-string').value = s.join(', ');
-        }
-
-        // --- 釣魚盤邏輯 ---
-        window.generateFishingData = function() {
-            let maxU = 1000;
-            employers.forEach(e => { if(e.id.startsWith('U')) { let n=parseInt(e.id.substring(1)); if(n>maxU)maxU=n; }});
-            document.getElementById('inp-id').value = 'U' + (maxU + 1);
-            const st = Object.keys(locationMap);
-            document.getElementById('inp-location').value = st[Math.floor(Math.random()*st.length)];
-            
-            // 國籍隨機 (排除其他)
-            const nats = ['Filipino', 'Indonesian', 'Filipino & Indonesian', 'Indonesian & Filipino']; 
-            document.getElementById('inp-nationality').value = nats[Math.floor(Math.random()*nats.length)];
-            toggleNatOther();
-
-            // Family
-            currentMembers = [];
-            const a = Math.floor(Math.random()*2)+1; 
-            for(let i=0; i<a; i++) currentMembers.push({text: "1成人"});
-            if(Math.random()>0.5) {
-                const k = Math.floor(Math.random()*2)+1; 
-                for(let i=0; i<k; i++) currentMembers.push({text: `1小孩(${Math.floor(Math.random()*17)}歲)`});
-            }
-            if(Math.random()>0.7) {
-                const e = Math.floor(Math.random()*2)+1; 
-                for(let i=0; i<e; i++) currentMembers.push({text: `1長者(${Math.floor(Math.random()*31)+60}歲)`});
-            }
-            updateMemberDisplay();
-
-            // Pets
-            currentPets = [];
-            const pTypes = ['沒有寵物', '小狗', '中狗', '大狗', '貓'];
-            const p = pTypes[Math.floor(Math.random()*pTypes.length)];
-            if(p === '沒有寵物') {
-                currentPets.push({text: '沒有寵物'});
+        // 導航欄縮小效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-md', 'bg-white/95');
+                if (window.innerWidth <= 768) {
+                    navbar.classList.add('shrink');
+                }
             } else {
-                const qty = Math.floor(Math.random()*2)+1;
-                currentPets.push({text: `${qty}${p}`});
+                navbar.classList.remove('shadow-md', 'bg-white/95', 'shrink');
             }
-            updatePetDisplay();
+        });
 
-            // Room
-            const rOpts = ['有工人房','有工人房','有工人房','與小孩同房','與長者同房','與另外傭同房','與女僱主同房'];
-            document.getElementById('inp-room').value = rOpts[Math.floor(Math.random()*rOpts.length)];
-            toggleRoomOther();
-
-            // Salary
-            const sals = [5100, 5300, 5500, 5500, 5500, 5800, 6000];
-            document.getElementById('inp-salary').value = sals[Math.floor(Math.random()*sals.length)];
-
-            // Lang
-            const langs = ['英文','英文','英文','廣東話','普通話','英文&廣東話','英文&普通話'];
-            document.getElementById('inp-lang').value = langs[Math.floor(Math.random()*langs.length)];
-
-            document.getElementById('inp-date').value = '盡快';
-            document.getElementById('inp-remarks').value = '';
-        };
-
-        window.resetForm = function() {
-            document.getElementById('employer-form').reset();
-            document.getElementById('edit-doc-id').value = '';
-            currentMembers = []; updateMemberDisplay();
-            currentPets = []; updatePetDisplay();
-            toggleNatOther();
-            toggleRoomOther();
-            togglePetInputs();
-            // Clear error states
-            document.querySelectorAll('.error-msg').forEach(e => e.classList.remove('visible'));
-            document.querySelectorAll('.input-error').forEach(e => e.classList.remove('input-error'));
-        };
-
-        // --- 公開列表 ---
-        function renderPublicList() {
-            const container = document.getElementById('public-records-container');
-            container.innerHTML = '';
-            const activeEmps = employers.filter(e => e.active);
-            const totalPages = Math.ceil(activeEmps.length / itemsPerPage);
-            const start = (currentPage - 1) * itemsPerPage;
-            const pageData = activeEmps.slice(start, start + itemsPerPage);
-            const isEn = currentLang === 'english';
+        // 倒數計時器邏輯
+        function updateCountdown() {
+            const now = new Date();
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const hkTime = new Date(utc + (3600000 * 8));
             
-            // Banner Styling
-            const bannerBox = document.getElementById('banner-box');
-            const bannerText = document.getElementById('banner-text');
-            // Reset base styles
-            bannerBox.className = "w-full max-w-4xl mb-6 p-4 rounded-lg text-left shadow-md border-l-8 bg-blue-50 border-blue-300 text-black";
-            
-            if(isEn) {
-                bannerText.innerHTML = "💵 All helpers NO placement fee, NO agency fee, NO registration fee.<br>💼 Apply job or refer your friends? Click the green button below to WhatsApp us.";
-                bannerText.style.fontSize = "1.2rem"; // Base + 2px roughly
-                document.getElementById('public-title').innerText = 'Employer List';
-                document.getElementById('public-title').style.fontSize = "1.9rem"; // +1px relative
-                document.getElementById('nav-indonesian').innerText = '🇮🇩 Indonesian';
-                document.getElementById('btn-prev').innerText = 'Prev';
-                document.getElementById('btn-next').innerText = 'Next';
-            } else {
-                bannerText.innerHTML = "💵 Semua pekerja tanpa biaya penempatan, tanpa biaya agen, dan tanpa biaya pendaftaran.<br>💼 Ingin melamar kerja atau merekomendasikan teman? Klik tombol hijau di bawah untuk WhatsApp kami.";
-                bannerText.style.fontSize = "1.2rem"; 
-                document.getElementById('public-title').innerText = 'Daftar Majikan';
-                document.getElementById('public-title').style.fontSize = "1.9rem";
-                document.getElementById('nav-indonesian').innerText = '🇮🇩 Indonesian';
-                document.getElementById('btn-prev').innerText = 'Sebelumnya'; // Fixed from text request (text says Sebelumnya in code, user asked for fix on Next)
-                // User asked: "Selanjutnya" -> "Berikutnya"
-                document.getElementById('btn-next').innerText = 'Berikutnya';
-            }
+            let target = new Date(hkTime);
+            target.setHours(20, 0, 0, 0);
 
-            if(pageData.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center p-10 text-gray-500 text-xl">No Data / Tidak Ada Data</div>';
-                updatePageIndicator(0, 0, isEn);
+            let resetTime = new Date(hkTime);
+            resetTime.setHours(20, 1, 0, 0);
+
+            if (hkTime > resetTime) {
+                target.setDate(target.getDate() + 1);
+            } else if (hkTime > target && hkTime <= resetTime) {
+                document.getElementById('countdown').innerHTML = "00:00:00";
                 return;
             }
 
-            pageData.forEach(e => {
-                const tLoc = translateText(e.location, currentLang);
-                const tNat = e.nationality; // Keep English for Nat
-                const tMem = translateText(e.members, currentLang);
-                const tPet = translatePets(e.pets, currentLang);
-                const tRoom = getDict(e.room, currentLang);
-                const tDate = getDict(e.date, currentLang);
-                const tLang = getDict(e.lang, currentLang);
-                let tRem = e.remarks;
-                if (!isEn && e.remarks) tRem = e.remarks.replace(/好僱主/g, 'Majikan Baik').replace(/準時出糧/g, 'Gaji Tepat Waktu');
+            const diff = target - hkTime;
 
-                // Formatting
-                const idD = isEn ? `Employer Number: ${e.id}` : `Nomor Majikan: ${e.id}`;
-                const salD = isEn ? `Salary $${e.salary}` : `Gaji $${e.salary}`;
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-                // Red text logic
-                const petClass = (tPet.includes('No Pets') || tPet.includes('Tidak ada hewan')) ? "text-red-600 font-bold" : "text-gray-800 font-medium";
-                const roomClass = (tRoom.includes('have own room') || tRoom.includes('ada kamar sendiri')) ? "text-red-600 font-bold" : "text-gray-800 font-medium";
-                const dateClass = (tDate === 'ASAP' || tDate === 'Secepatnya') ? "text-red-600 font-bold" : "text-gray-800 font-medium";
+            const h = hours < 10 ? "0" + hours : hours;
+            const m = minutes < 10 ? "0" + minutes : minutes;
+            const s = seconds < 10 ? "0" + seconds : seconds;
 
-                const L = {
-                    loc: isEn ? 'Employer Location' : 'Lokasi Majikan',
-                    nat: isEn ? 'Nationality' : 'kebangsaan',
-                    fam: isEn ? 'Employer Member & Age' : 'Anggota Keluarga & Usia',
-                    pets: isEn ? 'Pets' : 'Hewan Peliharaan',
-                    room: isEn ? 'Helper Room' : 'Kamar Pembantu',
-                    date: isEn ? 'START of WORK DAY' : 'Mulai Hari Kerja',
-                    lang: isEn ? 'Language' : 'Bahasa',
-                    rem: isEn ? 'Remarks' : 'Catatan'
-                };
-
-                // Order Logic:
-                // 1. Nat, 2. Lang, 3. Family, 4. Location, 5. Pets, 6. Room, 7. Date
-                const html = `
-                    <div class="bg-white rounded-xl shadow-xl border-t-8 border-blue-600 overflow-hidden flex flex-col p-6 space-y-4">
-                        <div class="flex flex-col border-b pb-3 mb-2">
-                            <h3 class="text-2xl font-bold text-gray-900">${idD}</h3>
-                            <span class="text-2xl font-bold text-green-600 mt-1">${salD}</span>
-                        </div>
-                        <div><p class="text-sm text-gray-400 font-bold uppercase tracking-wide">${L.nat}</p><p class="font-medium text-gray-800 text-xl">${tNat}</p></div>
-                        <div><p class="text-sm text-gray-400 font-bold uppercase tracking-wide">${L.lang}</p><p class="font-medium text-blue-800 text-xl">${tLang}</p></div>
-                        <div><p class="text-sm text-gray-400 font-bold uppercase tracking-wide">${L.fam}</p><p class="font-medium text-gray-800 text-xl">${tMem}</p></div>
-                        <div><p class="text-sm text-gray-400 font-bold uppercase tracking-wide">${L.loc}</p><p class="font-medium text-gray-800 text-xl">${tLoc}</p></div>
-                        <div><p class="text-sm text-gray-400 font-bold uppercase tracking-wide">${L.pets}</p><p class="${petClass} text-xl">${tPet}</p></div>
-                        <div><p class="text-sm text-gray-400 font-bold uppercase tracking-wide">${L.room}</p><p class="${roomClass} text-xl">${tRoom}</p></div>
-                        <div><p class="text-sm text-gray-400 font-bold uppercase tracking-wide">${L.date}</p><p class="${dateClass} text-xl">${tDate}</p></div>
-                        ${e.remarks ? `<div class="bg-yellow-50 p-3 rounded border border-yellow-100"><p class="text-sm text-gray-500 font-bold uppercase">${L.rem}</p><p class="text-lg text-gray-700 italic">${tRem}</p></div>` : ''}
-                    </div>
-                `;
-                container.innerHTML += html;
-            });
-            updatePageIndicator(currentPage, totalPages, isEn);
-        }
-
-        function updatePageIndicator(curr, total, isEn) {
-            const label = isEn ? 'Page' : 'Halaman';
-            document.getElementById('page-indicator').innerText = `${label} ${curr} / ${total || 1}`;
-        }
-
-        // --- Translation Helpers ---
-        function translateText(text, lang) {
-            if(!text) return '-';
-            let res = text;
-            for(let cn in locationMap) { if(res.includes(cn)) res = res.replace(cn, locationMap[cn]); }
-            
-            if(lang === 'english') {
-                res = res.replace(/成人/g, ' Adult')
-                         .replace(/小孩/g, ' Child')
-                         .replace(/長者/g, ' Elderly')
-                         .replace(/男孩/g, ' Boy')
-                         .replace(/女孩/g, ' Girl')
-                         .replace(/婆婆/g, ' Grandma')
-                         .replace(/公公/g, ' Grandpa')
-                         .replace(/歲/g, 'yo');
-            } else {
-                res = res.replace(/成人/g, ' Dewasa')
-                         .replace(/小孩/g, ' Anak')
-                         .replace(/長者/g, ' Lansia')
-                         .replace(/男孩/g, ' Anak Laki-laki')
-                         .replace(/女孩/g, ' Anak Perempuan')
-                         .replace(/婆婆/g, ' Nenek')
-                         .replace(/公公/g, ' Kakek')
-                         .replace(/歲/g, 'th');
-            }
-            return res;
+            document.getElementById('countdown').innerHTML = `${h}:${m}:${s}`;
         }
         
-        function translatePets(text, lang) {
-            if(!text) return '-';
-            if(text === '沒有寵物') return getDict('沒有寵物', lang);
-            const parts = text.split(', ');
-            const translatedParts = parts.map(p => {
-                const match = p.match(/^(\d+)(.+)$/);
-                if(match) {
-                    const qty = match[1];
-                    const name = match[2];
-                    const tName = getDict(name, lang); 
-                    return `${qty} ${tName}`;
-                }
-                return p; 
-            });
-            return translatedParts.join(', ');
-        }
-
-        function getDict(key, lang) {
-            const t = lang === 'english' ? 'en' : 'id';
-            if(dict[key] && dict[key][t]) return dict[key][t];
-            if(key && key.length > 0) return key; 
-            return '-';
-        }
-        
-        window.changePage = function(dir) {
-            const activeEmps = employers.filter(e => e.active);
-            const totalPages = Math.ceil(activeEmps.length / itemsPerPage);
-            let newPage = currentPage + dir;
-            if (newPage < 1) newPage = 1; else if (newPage > totalPages) newPage = totalPages;
-            if (newPage !== currentPage) { currentPage = newPage; renderPublicList(); window.scrollTo(0, 0); }
-        };
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
